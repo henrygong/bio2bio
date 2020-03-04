@@ -11,7 +11,7 @@ contracts/
 scripts/  
 &nbsp;&nbsp;postToEth.py - script that posts data to IPFS/blockchain  
 public/  
-&nbsp;&nbsp;index.html - Dapp that allows users to view files posted through this program  
+&nbsp;&nbsp;index.html - Dapp that allows users to view files posted through this program, maintains an index of files  
 
 Pseudocode for uploader:  
 
