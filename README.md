@@ -6,25 +6,25 @@
 
 Major components of this repository:  
 contracts/  
-  HashStore.sol - solidity smart contract that stores information on the blockchain  
-    Inputs: hash (text), tag, previous hash if given  
+&nbsp;&nbsp;HashStore.sol - solidity smart contract that stores information on the blockchain  
+&nbsp;&nbsp;&nbsp;&nbsp;Inputs: hash (text), tag, previous hash if given  
 scripts/  
-  postToEth.py - script that posts data to IPFS/blockchain  
+&nbsp;&nbsp;postToEth.py - script that posts data to IPFS/blockchain  
 public/  
-  index.html - Dapp that allows users to view files posted through this program  
+&nbsp;&nbsp;index.html - Dapp that allows users to view files posted through this program  
 
 Pseudocode for uploader:  
 
 postToIPFSBlockchain(data, dataTypeTag, previousVersionHash, doEncrypt){  
-  key = NULL  
-  IPFSIndex = getIPFSIndex()  
-  hash = getIPFSHash(data)  
-  if hash in IPFSIndex:  
-    return ("hash found in IPFS index, this data is already posted")  
-  if doEncrypt:  
-    hash, key = encrypt(hash)  
-  transactionID = postToBlockchain(hash, dataTypeTag, previousVersionHash)  
-  return (hash, key, transactionID)  
- }  
+&nbsp;&nbsp;key = NULL  
+&nbsp;&nbsp;IPFSIndex = getIPFSIndex()  
+&nbsp;&nbsp;hash = getIPFSHash(data)  
+&nbsp;&nbsp;if hash in IPFSIndex:  
+&nbsp;&nbsp;&nbsp;&nbsp;return ("hash found in IPFS index, this data is already posted")  
+&nbsp;&nbsp;if doEncrypt:  
+&nbsp;&nbsp;&nbsp;&nbsp;hash, key = encrypt(hash)  
+&nbsp;&nbsp;transactionID = postToBlockchain(hash, dataTypeTag, previousVersionHash)  
+&nbsp;&nbsp;return (hash, key, transactionID)  
+}  
  
 A Docker image file will be made available with IPFS installed.  
