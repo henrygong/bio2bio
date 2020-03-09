@@ -16,34 +16,34 @@ public/
 Pseudocode for uploader:  
 
 postToIPFSBlockchain(data, dataTypeTag, previousVersionHash, doEncrypt){  
-&nbsp;&nbsp;key = NULL  
-&nbsp;&nbsp;IPFSIndex = getIPFSIndex()  
-&nbsp;&nbsp;hash = getIPFSHash(data)  
-&nbsp;&nbsp;if hash in IPFSIndex:  
-&nbsp;&nbsp;&nbsp;&nbsp;return ("hash found in IPFS index, this data is already posted")  
-&nbsp;&nbsp;if doEncrypt:  
-&nbsp;&nbsp;&nbsp;&nbsp;hash, key = encrypt(hash)  
-&nbsp;&nbsp;transactionID = postToBlockchain(hash, dataTypeTag, previousVersionHash)  
-&nbsp;&nbsp;return (hash, key, transactionID)  
+&nbsp;&nbsp;&nbsp;&nbsp;key = NULL  
+&nbsp;&nbsp;&nbsp;&nbsp;IPFSIndex = getIPFSIndex()  
+&nbsp;&nbsp;&nbsp;&nbsp;hash = getIPFSHash(data)  
+&nbsp;&nbsp;&nbsp;&nbsp;if hash in IPFSIndex:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return ("hash found in IPFS index, this data is already posted")  
+&nbsp;&nbsp;&nbsp;&nbsp;if doEncrypt:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hash, key = encrypt(hash)  
+&nbsp;&nbsp;&nbsp;&nbsp;transactionID = postToBlockchain(hash, dataTypeTag, previousVersionHash)  
+&nbsp;&nbsp;&nbsp;&nbsp;return (hash, key, transactionID)  
 }  
  
 A Docker image file will be made available with dependencies installed.
 
-Dependencies of postToEth.py:
-argparse
-ipfshttpclient
-web3
-hexbytes
-cryptography
+Dependencies of postToEth.py:  
+argparse  
+ipfshttpclient  
+web3  
+hexbytes  
+cryptography  
 
 Also, an IPFS daemon must be running in the background at port 5001.
 
-How to run postToEth.py:
+How to run postToEth.py:  
 python postEth.py -e -p=\<Previous hash as string\> -t=\<Data tag integer\> -f=\<File or folder name to upload\> -a=\<Wallet address, for now use Rinkeby\> -k=\<Secret key for the wallet\>
 
-Check out your data at these IPFS mirrors:
-ipfs.io\/ipfs\/\<Your hash here\>
-cloudflare-ipfs.com\/ipfs\/\<Your hash here\>
+Check out your data at these IPFS mirrors:  
+ipfs.io\/ipfs\/\<Your hash here\>  
+cloudflare-ipfs.com\/ipfs\/\<Your hash here\>  
 
 View your transaction here:
 rinkeby.etherscan.io
@@ -59,7 +59,8 @@ Running postToEth.py:
 Viewing the transaction on etherscan.io:  
 ![viewTransaction](viewTx.PNG)  
   
-TODO:
-use passwords instead of generated keys? Has pros/cons
-check whether the hash has been uploaded already
-separate capability to send us keys - should not be in the same script as postToEth.py as that asks for very sensitive info (wallet private key).
+TODO:  
+use passwords instead of generated keys? Has pros/cons  
+check whether the hash has been uploaded already  
+separate capability to send us keys - should not be in the same script as postToEth.py as that asks for very sensitive info (wallet private key).  
+  
