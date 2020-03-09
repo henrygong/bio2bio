@@ -49,9 +49,13 @@ View your transaction here:
 rinkeby.etherscan.io
 
 Pictures of the process:
-Running the IPFS daemon:
-![IPFS-Daemon](ipfs_daemon.png)
-Running postToEth.py:
-![postToEth](postToEth.png)
-Viewing the transaction on etherscan.io:
-![viewTransaction](viewTx.png)
+
+Running the IPFS daemon:  
+![IPFS-Daemon](ipfs_daemon.png)  
+  
+Running postToEth.py:  
+![postToEth](postToEth.png)  
+  
+Viewing the transaction on etherscan.io:  
+![viewTransaction](viewTx.png)  
+  
