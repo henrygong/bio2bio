@@ -40,3 +40,18 @@ Also, an IPFS daemon must be running in the background at port 5001.
 
 How to run postToEth.py:
 python postEth.py -e -p=\<Previous hash as string\> -t=\<Data tag integer\> -f=\<File or folder name to upload\> -a=\<Wallet address, for now use Rinkeby\> -k=\<Secret key for the wallet\>
+
+Check out your data at these IPFS mirrors:
+ipfs.io\/ipfs\/\<Your hash here\>
+cloudflare-ipfs.com\/ipfs\/\<Your hash here\>
+
+View your transaction here:
+rinkeby.etherscan.io
+
+Pictures of the process:
+Running the IPFS daemon:
+![IPFS-Daemon](ipfs_daemon.png)
+Running postToEth.py:
+![postToEth](postToEth.png)
+Viewing the transaction on etherscan.io:
+![viewTransaction](viewTx.png)
