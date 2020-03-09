@@ -28,3 +28,13 @@ postToIPFSBlockchain(data, dataTypeTag, previousVersionHash, doEncrypt){
 }  
  
 A Docker image file will be made available with IPFS installed.  
+
+Dependencies of postToEth.py:
+argparse
+ipfshttpclient
+web3
+hexbytes
+cryptography
+
+How to run postToEth.py:
+python postEth.py -e -p=\<Previous hash as string\> -t=\<Data tag integer\> -f=\<File or folder name to upload\> -a=\<Wallet address, for now use Rinkeby\> -k=\<Secret key for the wallet\>
