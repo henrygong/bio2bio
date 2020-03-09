@@ -51,11 +51,11 @@ rinkeby.etherscan.io
 Pictures of the process:
 
 Running the IPFS daemon:  
-![IPFS-Daemon](ipfs_daemon.png)  
+![IPFS-Daemon](ipfs_daemon.PNG)  
   
 Running postToEth.py:  
 ![postToEth](postToEth.png)  
   
 Viewing the transaction on etherscan.io:  
-![viewTransaction](viewTx.png)  
+![viewTransaction](viewTx.PNG)  
   
