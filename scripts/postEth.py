@@ -71,6 +71,9 @@ class CommandLine(object):
         self.parser.add_argument('--gasPrice', '-g', type=str,
                                  action='store', default="40",
                                  help="transaction gas price in gWei")
+        self.parser.add_argument('--password', '-w', type=str,
+                                 action='store', default="",
+                                 help="user supplied password")
         self.parser.add_argument('--version', '-v', action='version',
                                  version='%(prog)s 0.1.0')
         if inOpts is None:
@@ -94,9 +97,12 @@ class CommandLine(object):
         self.a = self.arguments['account']
         self.k = self.arguments['privateKey']
         self.g = self.arguments['gasPrice']
+        self.w = self.arguments['password']
         if self.e:
             import sys
             print("Encrypting IPFS hash.", file=sys.stderr)
+        if self.e and self.w == "":
+            print("No password supplied, key will be given.", file=sys.stderr)
         if self.p == "":
             import sys
             print("No previous submission hash given.", file=sys.stderr)
@@ -121,7 +127,7 @@ class postToEth(object):
     Object that posts input data to IPFS then to blockchain.
     """
 
-    def __init__(self, t, p, e, f, o, a, k, g):
+    def __init__(self, t, p, e, f, o, a, k, g, w):
         """
         Program initialization.
 
@@ -138,6 +144,7 @@ class postToEth(object):
         self.account = a
         self.privateKey = k
         self.gasPrice = g
+        self.password = w
 
     def postIPFS(self):
         """Post input data to IPFS."""
@@ -189,10 +196,37 @@ class postToEth(object):
 
     def encryptHash(self, hash):
         """Encrypt hash."""
+        # https://cryptography.io/en/latest/fernet/
         from cryptography.fernet import Fernet
-        key = Fernet.generate_key()
-        f = Fernet(key)
-        token = f.encrypt(hash.encode('utf-8'))
+        print("IPFS hash: ", hash)
+        if self.password == "":
+            # no password was input. Generate a key.
+            key = Fernet.generate_key()
+            f = Fernet(key)
+            token = f.encrypt(hash.encode('utf-8'))
+        else:
+            # password was input. Use that in key.
+            import os
+            import base64
+            from cryptography.hazmat.primitives import hashes
+            from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+            from cryptography.hazmat.backends import default_backend
+            backend = default_backend()
+            # salt = os.urandom(16)
+            salt = os.urandom(0) # Nowhere to store salts so we'll use no salt
+            # derive
+            kdf = PBKDF2HMAC(
+                algorithm=hashes.SHA256(),
+                length=32,
+                salt=salt,
+                iterations=100000,
+                backend=backend
+             )
+            # key = kdf.derive(self.password.encode('utf-8'))
+            passwordBytes = self.password.encode('utf-8')
+            key = base64.urlsafe_b64encode(kdf.derive(passwordBytes))
+            f = Fernet(key)
+            token = f.encrypt(hash.encode('utf-8'))
         return token, key
 
 #################
@@ -210,13 +244,17 @@ def main(myCommandLine=None):
     myCL = CommandLine()
     myCL.commandInterpreter()
     myPost = postToEth(myCL.t, myCL.p, myCL.e, myCL.f, myCL.o,
-                       myCL.a, myCL.k, myCL.g)
-    hash = myPost.postIPFS()
+                       myCL.a, myCL.k, myCL.g, myCL.w)
+    # hash = myPost.postIPFS()
+    hash = myCL.f
     if myPost.doEncrypt:
         hash, key = myPost.encryptHash(hash)
-        print("Encryption key - keep this safe: ", key)
+        if myCL.w == "":
+            print("Encryption key - keep this safe: ", key)
+        print("Encrypted hash: ", hash)
+    else:
+        print("IPFS hash: ", hash)
     transactionHash = myPost.postEth(hash)
-    print("IPFS hash: ", hash)
     print("Transaction hash: ", transactionHash)
 
 
