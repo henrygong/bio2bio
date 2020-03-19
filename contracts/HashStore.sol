@@ -88,7 +88,7 @@ contract HashStore {
   * @dev save new hash
   * @param _hashContent Hash Content
   */
-  function save(string memory _hashContent, uint32 _tag, string memory _lastHashContent) payable public {
+  function save(string memory _hashContent, string memory _lastHashContent) payable public {
     // only save if service price paid
     require(msg.value >= price);
 
@@ -97,7 +97,6 @@ contract HashStore {
     hashes[hashId].sender = msg.sender;
     hashes[hashId].content = _hashContent;
     hashes[hashId].old = _lastHashContent;
-    hashes[hashId].tag = _tag;
     hashes[hashId].timestamp = block.timestamp;
 
     // Log event
