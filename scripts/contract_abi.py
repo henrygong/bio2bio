@@ -71,48 +71,12 @@ abi = """[
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_hashContent",
-				"type": "string"
-			},
-			{
-				"internalType": "uint32",
-				"name": "_tag",
-				"type": "uint32"
-			},
-			{
-				"internalType": "string",
-				"name": "_lastHashContent",
-				"type": "string"
-			}
-		],
-		"name": "save",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "uint256",
 				"name": "_price",
 				"type": "uint256"
 			}
 		],
 		"name": "StoreHash",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -222,6 +186,37 @@ abi = """[
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_hashContent",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_lastHashContent",
+				"type": "string"
+			}
+		],
+		"name": "save",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]"""
