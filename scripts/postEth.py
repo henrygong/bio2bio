@@ -69,6 +69,15 @@ class CommandLine(object):
         self.parser.add_argument('--new', action='store_true',
                                  default=False,
                                  help="Query only most updated posts")
+        self.parser.add_argument('--original', action='store_true',
+                                 default=False,
+                                 help="Query only posts with no valid prevHash")
+        self.parser.add_argument('--hash', type=str,
+                                 action='store', default="",
+                                 help="Query a specific IPFS hash")
+        self.parser.add_argument('--depth', type=str,
+                                 action='store', default="",
+                                 help="Query a specific tree depth")
 
         # Post flags
         self.parser.add_argument('--post', action='store_true', default=False,
@@ -116,6 +125,9 @@ class CommandLine(object):
         self.end = self.arguments['end']
         self.unencrypted = self.arguments['unencrypted']
         self.new = self.arguments['new']
+        self.original = self.arguments['original']
+        self.hash = self.arguments['hash']
+        self.depth = self.arguments['depth']
 
         self.post = self.arguments['post']
         self.p = self.arguments['previous']
@@ -391,9 +403,73 @@ class contractTransactions(object):
             txs = txs + [[thisHash, thisPrevHash, thisTime]]
         self.txs = txs
 
-    def findDuplicate(self, hash):
+    def makeContractTree(self):
+        """Make contract tree in igraph format."""
+        import igraph
+        g = igraph.Graph(directed=True, n=len(self.txs))
+        # store tx info per vertex in graph
+        g.vs["hash"] = [txData[0] for txData in self.txs]
+        g.vs["prevHash"] = [txData[1] for txData in self.txs]
+        g.vs["time"] = [txData[2] for txData in self.txs]
+        # add edges between vertices and their prevHash
+        newEdges = []
+        for i, p in enumerate(g.vs["prevHash"]):
+            if p != "" and p in g.vs["hash"]:
+                edgeFrom = g.vs["hash"].index(p)
+                edgeTo = i
+                newEdges += [(edgeFrom, edgeTo)]
+        g.add_edges(newEdges)
+        # find the depth of each vertex in g
+        # won't make sense if there are loops in the graph
+        gOut = g.get_adjlist(mode="OUT")
+
+        nVertices = len(g.vs)
+        vertexDepths = [0] * nVertices
+        for vertex in range(nVertices):
+            if gOut[vertex] != []:
+                for edgeOut in gOut[vertex]:
+                    vertexDepths[edgeOut] += (vertexDepths[vertex] + 1)
+
+        g.vs["depth"] = vertexDepths
+
+        self.g = g
+
+    def removeContractVertices(self, toRemove):
+        """
+        Remove specified vertices from contract tree.
+
+        toRemove: list of booleans, transactions to remove True or False
+        """
+        self.txs = self.txs[toRemove]
+
+        gIn = self.g.get_adjlist(mode="IN")
+        gOut = self.g.get_adjlist(mode="OUT")
+
+        delVertices = []
+        for i, removeThis in enumerate(toRemove):
+            if removeThis:
+                delVertices += [i]
+
+        edgesToAdd = []
+        for delVertex in delVertices:
+            # IN adjacency of vertex to delete (delVertex)
+            delVertexIn = gIn[delVertex]
+            # OUT adjacency of delVertex
+            delVertexOut = gOut[delVertex]
+
+            # if IN adjacency to delVertex is empty, then
+            # we can't make an edge to replace the deleted one
+            if delVertexIn != []:
+                for outEdge in delVertexOut:
+                    newEdge = (delVertexIn[0], outEdge)
+                    edgesToAdd = edgesToAdd + [newEdge]
+
+        self.g.add_edges(edgesToAdd)
+        self.g.delete_vertices(delVertices)
+
+    def findDuplicate(self, query):
         """Check if user-supplied hash has duplicate hash in posted hashes."""
-        if hash in [txData[0] for txData in self.txs]:
+        if query in [txData[0] for txData in self.txs]:
             return True
         else:
             return False
@@ -413,16 +489,22 @@ class contractTransactions(object):
         end = int(end.replace(tzinfo=timezone.utc).timestamp())
         # get list of all timeStamps
         times = [txData[2] for txData in self.txs]
+        # old filtering method: index range
         # get timepoint after/equal start, before/equal end
-        start = takeAdjacent(times, start, left = False)
-        end = takeAdjacent(times, end, left = True)
-        startIdx = times.index(start)
-        endIdx = times.index(end) + 1 # we want the range inclusive of the end
-        self.txs = self.txs[startIdx:endIdx]
+        # start = takeAdjacent(times, start, left = False)
+        # end = takeAdjacent(times, end, left = True)
+        # startIdx = times.index(start)
+        # endIdx = times.index(end) + 1 # we want the range inclusive of the end
+        # self.txs = self.txs[startIdx:endIdx]
+        # current filtering method: list comprehension and method
+        isInTimeRange = [time >= start and time <= end for time in times]
+        removeContractVertices([not val for val in isInTimeRange])
 
     def queryHashes(self, query):
         """Query hashes."""
-        pass
+        hashes = [txData[0] for txData in self.txs]
+        notQuery = [query != hash for hash in hashes]
+        removeContractVertices(notQuery)
 
     def getMostRecentHashes(self):
         """
@@ -430,48 +512,38 @@ class contractTransactions(object):
 
         Makes tree of lists.
         """
-        txTree = []
-        for i in range(len(self.txs)):
-            prevHashNotFound = True
-            while prevHashNotFound:
-
-
-
-        for i in range(len(self.txs)):
-            thisPrevHash = self.txs[i][1]
-            if thisPrevHash == "":
-                # no previous hash
-                baseTxs = baseTxs + [[[i]]]
-            else:
-                # previous hash exists
-                for j in range(len(baseTxs)):
-                    for k in range(len(baseTxs[j])):
-                        if self.txs[baseTxs[j][k]][1] == thisPrevHash:
-                            baseTxs[j] = baseTxs[j] + [[[i]]]
-
-
+        gOut = self.g.get_adjlist(mode="OUT")
+        hasOutEdges = [gOut[i] != [] for i in range(len(gOut))]
+        removeContractVertices(hasOutEdges)
 
     def getUnencryptedHashes(self):
         """
         Get only unencrypted hashes.
 
-        Depends on IPFS address length = 46, so IPNS addresses are incompatible.
+        Depends on IPFS address length = 46, so IPNS addresses are incompatible
         Does not otherwise check whether addresses are functional.
         """
         lenIPFSAddress = 46
         hashes = [txData[0] for txData in self.txs]
-        isUnencrypted = [len(hash) == 46 for hash in hashes]
-        self.txs = self.txs[isUnencrypted]
+        isUnencrypted = [len(hash) == lenIPFSAddress for hash in hashes]
+        removeContractVertices(isUnencrypted)
 
     def getOriginalPosts(self):
         """
-        Get only posts without previous hashes.
+        Get only posts without previous hashes (that exist in the graph).
 
         This is not a guarantee that the post is actually original.
         """
-        previous = [txData[1] for txData in self.txs]
-        isOriginal = [prev == "" for prev in previous]
-        self.txs = self.txs[isOriginal]
+        # previous = [txData[1] for txData in self.txs]
+        # isOriginal = [prev == "" for prev in previous]
+        # self.txs = self.txs[isOriginal]
+        getPostsAtDepth(0)
+
+    def getPostsAtDepth(self, depth):
+        """
+        Get only posts at a certain graph depth.
+        """
+        removeContractVertices([post != depth for post in g.vs["depth"]])
 
 
 #################
@@ -520,9 +592,9 @@ def main(myCommandLine=None):
     if myCL.post:
         myPost = postToEth(myCL.p, myCL.e, myCL.f, myCL.o,
                            myCL.g, myCL.w)
-        # hash = myPost.postIPFS()
+        hash = myPost.postIPFS()
         # don't need to upload to IPFS everytime for now
-        hash = myCL.f # temporary
+        # hash = myCL.f # temporary
         if myPost.doEncrypt:
             hash, key = myPost.encryptHash(hash)
             if myCL.w == "": # if no password given, give the user their key
@@ -549,6 +621,10 @@ def main(myCommandLine=None):
             myContractTxs.getMostRecentHashes()
         if myCL.start != "":
             myContractTxs.queryTime(myCL.start, myCL.end)
+        if myCL.original:
+            myContractTxs.getOriginalPosts()
+        if myCL.depth:
+            myContractTxs.getPostsAtDepth()
         import json
         with open('filteredTransactions.json', 'w') as f:
             f.write(json.dumps(myContractTxs.txs))
