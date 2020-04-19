@@ -102,6 +102,11 @@ abi = """[
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "_lastHashContent",
+				"type": "string"
+			},
+			{
 				"internalType": "uint256",
 				"name": "hashTimestamp",
 				"type": "uint256"
@@ -139,11 +144,6 @@ abi = """[
 				"internalType": "string",
 				"name": "old",
 				"type": "string"
-			},
-			{
-				"internalType": "uint32",
-				"name": "tag",
-				"type": "uint32"
 			}
 		],
 		"stateMutability": "view",
