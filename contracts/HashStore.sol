@@ -21,8 +21,6 @@ contract HashStore {
     uint timestamp;
     // previous hash text
     string old;
-    // tag
-    uint32 tag;
   }
 
   // Hashes mapping
@@ -107,7 +105,7 @@ contract HashStore {
   * @dev find hash by id
   * @param _hashId Hash Id
   */
-  function find(uint _hashId) view public returns (address hashSender, string memory hashContent, uint hashTimestamp) {
-    return (hashes[_hashId].sender, hashes[_hashId].content, hashes[_hashId].timestamp);
+  function find(uint _hashId) view public returns (address hashSender, string memory hashContent, string memory _lastHashContent, uint hashTimestamp) {
+    return (hashes[_hashId].sender, hashes[_hashId].content, hashes[_hashId].old, hashes[_hashId].timestamp);
   }
 }
