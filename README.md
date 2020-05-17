@@ -103,8 +103,5 @@ Viewing the transaction on etherscan.io:
 ![viewTransaction](viewTx.PNG)  
 
 TODO:  
-use passwords instead of generated keys? Has pros/cons  
-check whether the hash has been uploaded already  
 separate capability to send us keys - should not be in the same script as postToEth.py as that asks for very sensitive info (wallet private key).  
-remove tags
-webpage version for user accessibility  
+password management on the app?  
