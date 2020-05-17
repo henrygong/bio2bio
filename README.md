@@ -21,6 +21,15 @@ Run this to start the IPFS daemon: `$ipfs daemon`
 * web3 (You may need to update your cython to install its dependencies.)
 * hexbytes
 * cryptography
+* pandas
+
+#### Additional packages required to run local web app.
+* flask
+* json
+* contextlib
+* flask_wtf
+* wtforms
+
 
 ### Blockchain account
 Guide for getting a blockchain account to post data, using Metamask.  
@@ -51,6 +60,9 @@ contracts/
 &nbsp;&nbsp;&nbsp;&nbsp;Inputs: hash (text), tag, previous hash if given  
 scripts/  
 &nbsp;&nbsp;postToEth.py - script that posts data to IPFS/blockchain  
+app/
+&nbsp;&nbsp;app.py - script that operates web app implementation of postToEth.py
+&nbsp;&nbsp;templates - html webpages that comprise the app
 public/  
 &nbsp;&nbsp;index.html - Dapp that allows users to view files posted through this program, maintains an index of files  
 
@@ -69,13 +81,6 @@ postToIPFSBlockchain(data, dataTypeTag, previousVersionHash, doEncrypt){
 }  
  
 A Docker image file will be made available with dependencies installed.
-
-Dependencies of postToEth.py:  
-argparse  
-ipfshttpclient  
-web3  
-hexbytes  
-cryptography  
 
 Also, an IPFS daemon must be running in the background at port 5001.
 
