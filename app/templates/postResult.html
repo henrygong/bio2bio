@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+        /* Style the table of inputs */
+        #query {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #query td, #query th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #query tr:nth-child(even){background-color: #f2f2f2;}
+
+        #query th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Style the nav bar */
+        body {margin:0;}
+
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .navbar a:hover {
+            background: #ddd;
+            color: black;
+        }
+
+        .main {
+            padding: 16px;
+            margin-top: 30px;
+            height: 1500px; /* Used in this example to enable scrolling */
+        }
+        .stdout {
+            white-space: pre-wrap;
+        }
+        </style>
+    </head>
+<body>
+
+<html>
+    <body>
+        <div class="navbar">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('post') }}">Post</a>
+            <a href="{{ url_for('download') }}">Download</a>
+            <a href="{{ url_for('query') }}">Query</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </div>
+        <br>
+        <div class="main">
+            <table id="query" border = 1>
+                {% for key, value in result.items() %}
+                <tr>
+                    <th> {{ key }} </th>
+                    <td> {{ value }} </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br>
+            <div class="stdout">
+                {{ s }}
+            </div>
+        </div>
+    </body>
+</html>

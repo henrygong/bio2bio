@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+        /* Style the form */
+        input[type=text] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid grey;
+            border-radius: 4px;
+        }
+        input[type=submit] {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        select {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+        }
+        /* Style the nav bar */
+        body {margin:0;}
+
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .navbar a:hover {
+            background: #ddd;
+            color: black;
+        }
+
+        .main {
+            padding: 16px;
+            margin-top: 30px;
+            height: 1500px; /* Used in this example to enable scrolling */
+        }
+        </style>
+    </head>
+<body>
+
+<html>
+    <body>
+        <div class="navbar">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('post') }}">Post</a>
+            <a href="{{ url_for('makejson') }}">Make JSON</a>
+            <a href="{{ url_for('download') }}">Download</a>
+            <a href="{{ url_for('query') }}">Query</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </div>
+        <div class="main">
+            <form action = "http://localhost:5000/postresult" method = "POST">
+                <p>
+                    Post a folder to IPFS/Ethereum (currently Rinkeby testnet).
+                    Note that if the folder has the same hash as another folder in the blockchain,
+                    you will receive the error "The connection was reset" and the app will crash.
+                </p>
+                <p>Folder to Post (required, use absolute path)<input type = "text" name = "file" /></p>
+                <p>Should sub-folders be their own posts?</p>
+                <select id="folder" name="folder">
+                    <option value="">No</option>
+                    <option value="True">Yes</option>
+                </select>
+                <p>Previous Hash (optional)<input type = "text" name = "prevHash" /></p>
+                <p>Ethereum Address/Account (required)<input type = "text" name = "account" /></p>
+                <p>Account Private Key (required)<input type = "text" name = "privateKey" /></p>
+                <p>Password if encrypting (required if encrypting)<input type = "text" name = "password" /></p>
+                <p>Encrypt?</p>
+                <select id="encrypt" name="encrypt">
+                    <option value="">No</option>
+                    <option value="True">Yes</option>
+                </select>
+                <p>Does metadata.json exist?</p>
+                <select id="meta" name="meta">
+                    <option value="">No</option>
+                    <option value="True">Yes</option>
+                </select>
+                <p><input type = "submit" value = "submit" /></p>
+            </form>
+        </div>
+    </body>
+</html>

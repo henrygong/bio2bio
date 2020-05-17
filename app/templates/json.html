@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+        /* Style the form */
+        input[type=text] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid grey;
+            border-radius: 4px;
+        }
+        input[type=submit] {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        a.add {
+            background-color: #4c95ae;
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            margin: 4px 2px;
+            display: inline-block;
+        }
+        a.remove {
+            background-color: #ae4c4c;
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            margin: 4px 2px;
+            display: inline-block;
+        }
+        select {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+        }
+        /* Style the nav bar */
+        body {margin:0;}
+
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .navbar a:hover {
+            background: #ddd;
+            color: black;
+        }
+
+        .main {
+            padding: 16px;
+            margin-top: 30px;
+            height: 1500px; /* Used in this example to enable scrolling */
+        }
+        </style>
+    </head>
+<body>
+
+<html>
+    <head>
+        <title>Metadata json creator</title>
+
+        {# Import JQuery #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- <script src="jquery.min.js"></script> -->
+
+        <script>
+            /**
+             * Adjust the indices of form fields when removing items.
+             */
+            function adjustIndices(removedIndex) {
+                var $forms = $('.subform');
+
+                $forms.each(function(i) {
+                    var $form = $(this);
+                    var index = parseInt($form.data('index'));
+                    var newIndex = index - 1;
+
+                    if (index < removedIndex) {
+                        // Skip
+                        return true;
+                    }
+
+                    // Change ID in form itself
+                    $form.attr('id', $form.attr('id').replace(index, newIndex));
+                    $form.data('index', newIndex);
+
+                    // Change IDs in form inputs
+                    $form.find('input').each(function(j) {
+                        var $item = $(this);
+                        $item.attr('id', $item.attr('id').replace(index, newIndex));
+                        $item.attr('name', $item.attr('name').replace(index, newIndex));
+                    });
+                });
+            }
+
+            /**
+             * Remove a form.
+             */
+            function removeForm() {
+                var $removedForm = $(this).closest('.subform');
+                var removedIndex = parseInt($removedForm.data('index'));
+
+                $removedForm.remove();
+
+                // Update indices
+                adjustIndices(removedIndex);
+            }
+
+            /**
+             * Add a new form.
+             */
+            function addForm() {
+                var $templateForm = $('#field-_-form');
+
+                if (!$templateForm) {
+                    console.log('[ERROR] Cannot find template');
+                    return;
+                }
+
+                // Get Last index
+                var $lastForm = $('.subform').last();
+
+                var newIndex = 0;
+
+                if ($lastForm.length > 0) {
+                    newIndex = parseInt($lastForm.data('index')) + 1;
+                }
+
+                // Maximum of 20 subforms
+                if (newIndex > 20) {
+                    console.log('[WARNING] Reached maximum number of elements');
+                    return;
+                }
+
+                // Add elements
+                var $newForm = $templateForm.clone();
+
+                $newForm.attr('id', $newForm.attr('id').replace('_', newIndex));
+                $newForm.data('index', newIndex);
+
+                $newForm.find('input').each(function(idx) {
+                    var $item = $(this);
+
+                    $item.attr('id', $item.attr('id').replace('_', newIndex));
+                    $item.attr('name', $item.attr('name').replace('_', newIndex));
+                });
+
+                // Append
+                $('#subforms-container').append($newForm);
+                $newForm.addClass('subform');
+                $newForm.removeClass('is-hidden');
+
+                $newForm.find('.remove').click(removeForm);
+            }
+
+
+            $(document).ready(function() {
+                $('#add').click(addForm);
+                $('.remove').click(removeForm);
+            });
+        </script>
+
+        <style>
+            .is-hidden {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="navbar">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('post') }}">Post</a>
+            <a href="{{ url_for('makejson') }}">Make JSON</a>
+            <a href="{{ url_for('download') }}">Download</a>
+            <a href="{{ url_for('query') }}">Query</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </div><br>
+        <div class="main">
+            <!-- <a id="add" href="#" class="add">Add Metadata Field</a> -->
+
+            {# Show all subforms #}
+            <form id="field-form" action="http://localhost:5000/jsonresult" method="POST" role="form">
+                {{ form.hidden_tag() }}
+                <!-- <p>Folder for metadata.json (required, use absolute path)<input type = "text" name = "file" /></p> -->
+                {{ form.folder.label }}
+                {{ form.folder }}
+                <a id="add" href="#" class="add">Add Metadata Field</a>
+                <div id="subforms-container">
+                    {% for subform in form.fields %}
+                        <div id="field-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
+                            {{ subform.field_name.label }}
+                            {{ subform.field_name }}
+
+                            {{ subform.field_data.label }}
+                            {{ subform.field_data}}
+
+                            <a class="remove" href="#">Remove</a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- <button type="submit">Send</button> -->
+                <p><input type = "submit" value = "submit" /></p>
+            </form>
+
+            {% if form.errors %}
+                {{ form.errors }}
+            {% endif %}
+
+            {# Form template #}
+            <div id="field-_-form" class="is-hidden" data-index="_">
+                <label for="fields-_-field_name">Field name</label>
+                <input id="fields-_-field_name" name="fields-_-field_name" type="text" value="">
+
+                <label for="fields-_-field_data">Field info</label>
+                <input id="fields-_-field_data" name="fields-_-field_data" type="text">
+
+                <a class="remove" href="#">Remove</a>
+            </div>
+
+            {# Show submitted data #}
+            {% if data is defined %}
+                <p>Received data: {{ data }}</p>
+            {% endif %}
+
+            {# Show metadatas #}
+            {% for metadata in metadatas %}
+                <p><a href="{{ url_for('show_metadata', metadata_id=metadata.id) }}">Metadata {{ metadata.id }}</a></p>
+            {% endfor %}
+        </div>
+    </body>
+</html>
