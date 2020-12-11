@@ -11,7 +11,7 @@ Effective data sharing empowers biological research. Here, we present Bio2Bio, a
 ![Overview](overview.png)
 
 ## Installation
-This is an installation guide for macOS and Linux. For Windows, go to [Windows install guide](windows-install.md).
+This is an installation guide for macOS and Linux. For Windows, go to [Windows install guide](windows_install.md).
 
 ### IPFS  
 Follow the instructions to install IPFS here: https://docs.ipfs.io/guides/guides/install/#installing-from-a-prebuilt-package
@@ -50,12 +50,35 @@ Now you should be able to run postToEth.py!
 
 ### Flags
 
-* -f Path to directory to post to IPFS/blockchain.
-* -a Hash for your account.
-* -k Private key for your account.
-* -e Encrypt the IPFS hash. Default is False.
-* -p Previous IPFS hash, if applicable. Default is "".
-
+optional arguments:
+&nbsp;&nbsp;  -h, --help            show this help message and exit
+  &nbsp;&nbsp;--version, -v         show program's version number and exit
+  &nbsp;&nbsp;--out OUT             Location to store blockchain data, query results, downloads
+  &nbsp;&nbsp;--query               Run in query mode
+  &nbsp;&nbsp;--start START         Time query start, in YYYYMMDD format
+  &nbsp;&nbsp;--end END             Time query end, in YYYYMMDD format
+  &nbsp;&nbsp;--unencrypted         Query only unencrypted posts in subtrees
+  &nbsp;&nbsp;--new                 Query only most updated posts
+  &nbsp;&nbsp;--original            Query only posts with no valid prevHash
+  &nbsp;&nbsp;--hash HASH           Query a specific IPFS hash
+  &nbsp;&nbsp;--depth DEPTH         Query a specific tree depth, int
+  &nbsp;&nbsp;--printMetadata       Get and print metadata from IPFS for this query
+  &nbsp;&nbsp;--download DOWNLOAD   Download files associated with this hash
+  &nbsp;&nbsp;--post                Run in post mode
+  &nbsp;&nbsp;--previous PREVIOUS, -p PREVIOUS
+                        Previous submission hash
+  &nbsp;&nbsp;--doEncrypt, -e       Encrypt the IPFS hash using Fernet, default False
+  &nbsp;&nbsp;--file FILE, -f FILE  location of data to upload
+  &nbsp;&nbsp;--account ACCOUNT, -a ACCOUNT
+                        wallet hash
+  &nbsp;&nbsp;--privateKey PRIVATEKEY, -k PRIVATEKEY
+                        wallet private key
+  &nbsp;&nbsp;--gasPrice GASPRICE, -g GASPRICE
+                        transaction gas price in gWei, default 40
+  &nbsp;&nbsp;--password PASSWORD, -w PASSWORD
+                        user supplied password
+  &nbsp;&nbsp;--json                user walkthrough json for upload, default True
+  &nbsp;&nbsp;--skipEth             skip posting to Ethereum, for reposting to IPFS, default False
 
 ## Major repository components:
 
