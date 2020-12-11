@@ -17,7 +17,9 @@ This is an installation guide for macOS and Linux. For Windows, go to [Windows i
 Follow the instructions to install IPFS here: https://docs.ipfs.io/guides/guides/install/#installing-from-a-prebuilt-package
 
 Run this on first use: `$ipfs init`  
-Run this to start the IPFS daemon: `$ipfs daemon`  
+Run this to start the IPFS daemon: `$ipfs daemon` 
+
+Alternatively, use IPFS Desktop.  
 
 ### Packages to install using python3 pip.  
 * argparse
@@ -46,7 +48,7 @@ Guide for getting a blockchain account to post data, using Metamask.
 
 Now you should be able to run postToEth.py!
 
-`python path\to\postToEth.py <flags>`
+`python3 path/to/postToEth.py <flags>`
 
 ### Flags
 
@@ -109,7 +111,7 @@ postToIPFSBlockchain(data, dataTypeTag, previousVersionHash, doEncrypt){
  
 A Docker image file will be made available with dependencies installed.
 
-Also, an IPFS daemon must be running in the background at port 5001.
+Also, an IPFS daemon must be running in the background at ports 5001/8080.
 
 Check out your data at these IPFS mirrors:  
 ipfs.io\/ipfs\/\<Your hash here\>  
