@@ -1,5 +1,9 @@
 # bio2bio
 
+## Docker
+
+[stuartlab/bio2bio](https://hub.docker.com/repository/docker/stuartlab/posttoeth)
+
 ## Abstract
 
 Effective data sharing empowers biological research. Here, we present Bio2Bio, a peer-to-peer system for decentralized, secure and version-controlled sharing of biological data. The Bio2Bio system, in theory, is compatible with all existing biological data types, and can be extended to new types as they emerge. Together with downstream analytical pipelines, Bio2Bio creates an extendable ecosystem for collaborative research. We further develop tools for analyzing cellular state correspondence across single cell expression datasets, as an exemplar analytical pipeline in the ecosystem.
@@ -15,7 +19,7 @@ Follow the instructions to install IPFS here: https://docs.ipfs.io/guides/guides
 Run this on first use: `$ipfs init`  
 Run this to start the IPFS daemon: `$ipfs daemon`  
 
-### Packages to install using python pip.  
+### Packages to install using python3 pip.  
 * argparse
 * ipfshttpclient
 * web3 (You may need to update your cython to install its dependencies.)
@@ -25,8 +29,8 @@ Run this to start the IPFS daemon: `$ipfs daemon`
 
 #### Additional packages required to run local web app.
 * flask
-* json
-* contextlib
+* json (default python library)
+* contextlib (default python library)
 * flask_wtf
 * wtforms
 
@@ -62,7 +66,7 @@ scripts/
 &nbsp;&nbsp;postToEth.py - script that posts data to IPFS/blockchain  
 app/
 &nbsp;&nbsp;app.py - script that operates web app implementation of postToEth.py
-&nbsp;&nbsp;templates - html webpages that comprise the app
+&nbsp;&nbsp;&nbsp;&nbsp;templates - html webpages that comprise the app
 public/  
 &nbsp;&nbsp;index.html - Dapp that allows users to view files posted through this program, maintains an index of files  
 
@@ -101,7 +105,3 @@ Running postToEth.py:
   
 Viewing the transaction on etherscan.io:  
 ![viewTransaction](viewTx.PNG)  
-
-TODO:  
-separate capability to send us keys - should not be in the same script as postToEth.py as that asks for very sensitive info (wallet private key).  
-password management on the app?  
